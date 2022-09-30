@@ -1,0 +1,5 @@
+node_modules
+.expo
+.idea
+app.json
+eas.json
