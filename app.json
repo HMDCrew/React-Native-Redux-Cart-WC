@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "React-Native-Redux-WC-Cart",
+    "slug": "React-Native-Redux-WC-Cart",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}

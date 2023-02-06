@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, Dimensions, ScrollView, Image } from 'react-native'
+import { Text, View, Dimensions, Animated, ScrollView, Image } from 'react-native'
 import { connect } from 'react-redux'
 import RenderHtml from 'react-native-render-html'
 
@@ -29,25 +29,23 @@ export class Product extends Component {
 
                             <Text style={[styles.mt_5, { fontSize: SIZES.large }]}>{product.product.name}</Text>
 
-                            {'' !== product.product.price ?
-                                <Text style={[styles.mt_5, { fontSize: SIZES.large }]}>Price: {product.product.price}{product.product.symbol}</Text>
+                            {'' !== product.product.price
+                                ? <Text style={[styles.mt_5, { fontSize: SIZES.large }]}>Price: {product.product.price}{product.product.symbol}</Text>
                                 : null
                             }
 
-                            {
-                                product.product.gallery_image_ids.length ?
-                                    product.product.gallery_image_ids.map((image, index) => <Image style={[styles.w_100, { height: 250 }]} key={'img' + index} source={{ uri: image }} />)
-                                    : null
+                            {product.product.gallery_image_ids.length
+                                ? product.product.gallery_image_ids.map((image, index) => <Image style={[styles.w_100, { height: 250 }]} key={'img' + index} source={{ uri: image }} />)
+                                : null
                             }
 
-                            {
-                                '' !== product.product.description ?
-                                    <RenderHtml
-                                        ignoredDomTags={['iframe', 'script', 'style']}
-                                        contentWidth={windowWidth}
-                                        source={{ html: product.product.description }}
-                                    />
-                                    : null
+                            {'' !== product.product.description
+                                ? <RenderHtml
+                                    ignoredDomTags={['iframe', 'script', 'style']}
+                                    contentWidth={windowWidth}
+                                    source={{ html: product.product.description }}
+                                />
+                                : null
                             }
 
                         </ScrollView>

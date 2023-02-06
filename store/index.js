@@ -5,9 +5,7 @@ import productSlice from './features/productSlice';
 import loginSlice from './features/loginSlice'
 import cartSlice from './features/cartSlice';
 import chackoutSlice from './features/chackoutSlice';
-import nonceSlice from './features/Nonce';
-
-// /wp-json/wpr-get-nonce
+import nonceSlice from './features/nonceSlice';
 
 export const store = configureStore({
     reducer: {

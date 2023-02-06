@@ -7,11 +7,17 @@ import { COLORS } from '../constants/style';
 import Home from '../screens/Home'
 import Auth from '../screens/Auth'
 import Cart from '../screens/Cart'
-import Chackout from '../screens/Chackout';
+import Chackout from '../screens/Chackout'
+import Payment from '../screens/Payment'
 
 import Stack from './Stack';
 
 export class DrawerNavigator extends Component {
+
+    constructor(props) {
+        super(props);
+    }
+
     render() {
 
         const Drawer = createDrawerNavigator();
@@ -31,6 +37,7 @@ export class DrawerNavigator extends Component {
                 <Drawer.Screen name="Auth" component={Auth} />
                 <Drawer.Screen name="Cart" component={Cart} />
                 <Drawer.Screen name="Chackout" component={Chackout} />
+                <Drawer.Screen name="Payment" component={Payment} />
 
                 {/* don't use stack on first position because is used for nested store and product */}
                 <Drawer.Screen name="STACK" component={Stack} options={{

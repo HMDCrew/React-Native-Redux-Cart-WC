@@ -1,6 +1,6 @@
 import { Text, ScrollView, View, RefreshControl } from 'react-native'
 import React, { Component } from 'react'
-import { Button } from "@react-native-material/core"
+import { Button } from '@react-native-material/core'
 
 import { connect } from 'react-redux'
 

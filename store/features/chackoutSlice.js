@@ -1,11 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getPayments } from '../REST/api'
+import { getChackoutFields, getPayments, createOrder } from '../REST/api'
 
-export { getPayments };
+export { getChackoutFields, getPayments, createOrder };
 
 const initialState = {
+    fields: [],
     payments: [],
-    isLoaded: true
+    order: [],
+    missingOrderField: [],
+    isLoaded: false,
+    isLoadedFields: false,
 };
 
 const chackoutSlice = createSlice({
@@ -15,15 +19,55 @@ const chackoutSlice = createSlice({
     extraReducers: {
         [getPayments.pending]: (state) => {
             state.isLoaded = false;
-            console.log('action')
         },
         [getPayments.fulfilled]: (state, action) => {
             state.isLoaded = true;
-            console.log(action)
+            if ('success' === action.payload.status) {
+                state.payments = action.payload.message
+            } else {
+                state.payments = []
+            }
         },
         [getPayments.rejected]: (state) => {
             state.isLoaded = true;
-            console.log('action')
+            state.payments = []
+        },
+
+
+        [getChackoutFields.pending]: (state) => {
+            state.isLoadedFields = false;
+        },
+        [getChackoutFields.fulfilled]: (state, action) => {
+            state.isLoadedFields = true;
+            if ('success' === action.payload.status) {
+                state.fields = action.payload.message
+            } else {
+                state.fields = []
+            }
+        },
+        [getChackoutFields.rejected]: (state) => {
+            state.isLoadedFields = true;
+            state.fields = []
+        },
+
+
+        [createOrder.pending]: (state) => {
+            state.isOrderCreated = false;
+            state.order = [];
+        },
+        [createOrder.fulfilled]: (state, action) => {
+            if ('success' === action.payload.status) {
+                state.isOrderCreated = true;
+                state.order = action.payload.message;
+            } else if ("missing fields" === action.payload.message) {
+                state.isOrderCreated = false;
+                state.order = [];
+                state.missingOrderField = action.payload.fields;
+            }
+        },
+        [createOrder.rejected]: (state) => {
+            state.isOrderCreated = false;
+            state.order = [];
         },
     },
 });

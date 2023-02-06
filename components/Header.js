@@ -27,7 +27,7 @@ export class Header extends Component {
                         resizeMode='contain'
                     />
                 }
-                style={[styles.pb_1, { height: 100, justifyContent: 'flex-end' }]}
+                style={[styles.pb_1, { height: 80, justifyContent: 'flex-end' }]}
                 color={COLORS.primary}
                 leading={props => (
                     <IconButton

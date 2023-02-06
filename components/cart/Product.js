@@ -20,7 +20,7 @@ class ProductCart extends Component {
     componentDidMount() {
         this.setState({ qty: this.props.item.quantity })
     }
-    
+
     componentDidUpdate() {
         if(this.state.qty !== this.props.item.quantity) {
             this.setState({ qty: this.props.item.quantity })
@@ -101,10 +101,8 @@ class ProductCart extends Component {
                                 this.props.removeCartProduct(item.key)
                             }}
                         />
-
                     </View>
                 </View>
-
             </View>
         )
     }

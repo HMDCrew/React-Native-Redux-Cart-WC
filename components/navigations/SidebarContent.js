@@ -1,7 +1,6 @@
 import { SafeAreaView, FlatList, Image, Text, View } from 'react-native'
 import React, { Component } from 'react'
 import { Button } from "@react-native-material/core"
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
 
 import { connect } from 'react-redux'
 import { getTaxonomys } from '../../store/features/taxonomyMenuSlice'

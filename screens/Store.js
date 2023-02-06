@@ -1,7 +1,8 @@
-import { FlatList, RefreshControl, ScrollView, SafeAreaView, Text, View, VirtualizedList } from 'react-native'
+import { Text, View } from 'react-native'
 import React, { Component } from 'react'
-import { Stack, ActivityIndicator } from "@react-native-material/core"
 import axios from 'axios'
+
+import MasonryList from '@react-native-seoul/masonry-list';
 
 import env from '../constants/env'
 import Header from '../components/Header'
@@ -14,7 +15,7 @@ export class Store extends Component {
     super(props)
     this.state = {
       prod: [],
-      numberposts: 5,
+      numberposts: 10,
       page: 1,
       isLoaded: false,
       hasMore: true,
@@ -58,7 +59,7 @@ export class Store extends Component {
 
     this.setState({
       prod: [],
-      numberposts: 5,
+      numberposts: 10,
       page: 1,
       isLoaded: false,
       hasMore: true,
@@ -107,28 +108,23 @@ export class Store extends Component {
     const { prod, isLoaded, hasMore, loadingMore } = this.state;
 
     return (
-      <View style={styles.h_100}>
+      <View style={[styles.h_100, styles.bg_secondary]}>
         <Header {...this.props} />
-        <ScrollView
-          refreshControl={
-            <RefreshControl
+        {
+          prod && prod.length >= 1
+            ? <MasonryList
+              data={prod}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+              renderItem={(product, index) => <ProductArchive key={index} item={product} {...this.props} />}
               refreshing={!isLoaded}
               onRefresh={() => this.defaultSettingsSetup()}
+              onEndReached={() => hasMore && !loadingMore ? this.handleLoadMoreResults() : null}
             />
-          }
-          onMomentumScrollEnd={(event) => {
-            hasMore && !loadingMore ? this.handleLoadMoreResults() : null
-          }}
-        >
-          {
-            prod && prod.length >= 1 ?
-              prod.map((product, index) => <ProductArchive key={index} item={product} {...this.props} />)
-              :
-              (isLoaded ? <Text>No products</Text> : null)
-          }
+            : (isLoaded ? <Text>No products</Text> : null)
+        }
 
-          {loadingMore ? <Text>loading...</Text> : null}
-        </ScrollView>
+        {loadingMore ? <Text style={{ color: COLORS.white }}>loading...</Text> : null}
       </View >
     )
   }

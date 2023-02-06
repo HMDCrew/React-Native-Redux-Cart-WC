@@ -37,7 +37,7 @@ export const getLoginToken = createAsyncThunk('store/login', async ({ user, pass
         }).then((response) => {
             AsyncStorage.setItem('login-data', JSON.stringify(response.data))
             return response.data
-        })
+        }).catch((error) => error.json());
     }
 });
 
@@ -104,8 +104,6 @@ export const getCart = createAsyncThunk('store/cart', async () => {
     })
         .then((response) => response.data)
         .catch((error) => error.json());
-
-    return false;
 });
 
 
@@ -120,8 +118,6 @@ export const addProductCart = createAsyncThunk('store/cart/add/product', async (
     })
         .then((response) => response.data)
         .catch((error) => error.json());
-
-    return false;
 });
 
 
@@ -141,8 +137,6 @@ export const updateCart = createAsyncThunk('store/cart/update', async (cart) => 
     })
         .then((response) => response.data)
         .catch((error) => error.json());
-
-    return false;
 });
 
 
@@ -156,19 +150,38 @@ export const removeCartProduct = createAsyncThunk('store/cart/remove/product', a
     })
         .then((response) => response.data)
         .catch((error) => error.json());
-
-    return false;
 });
 
+
+/**
+ * API Chackout get Fields
+ */
+export const getChackoutFields = createAsyncThunk('store/chackout/fields', async () => {
+
+    return await axios.get("wp-json/wpr-chackout-fields")
+        .then((response) => response.data)
+        .catch((error) => error.json());
+});
 
 /**
  * API Chackout get Payments
  */
 export const getPayments = createAsyncThunk('store/chackout/payments', async () => {
 
-    return await axios.get("wp-json/wc/v3/payment_gateways")
-        .then((response) => { console.log(response.data); return response.data })
-        .catch((error) => { console.log(error); return error.json() });
+    return await axios.get("wp-json/wpr-payment-gateway")
+        .then((response) => response.data)
+        .catch((error) => error.json());
+});
 
-    return false;
+
+/**
+ * API create new Order
+ */
+export const createOrder = createAsyncThunk('store/order/new', async ({ cart, form_fields }) => {
+
+    return await axios.post("wp-json/wpr-create-order", {
+        cart, form_fields
+    })
+        .then((response) => response.data)
+        .catch((error) => error.json());
 });

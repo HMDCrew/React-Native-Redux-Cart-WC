@@ -4,7 +4,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 
 import DrawerNavigator from './DrawerNavigator'
 
-let themeFonts = {
+const themeFonts = {
     BarlowRegular: require("../assets/fonts/ttf/Barlow-Regular.ttf"),
     BarlowMedium: require("../assets/fonts/ttf/Barlow-Medium.ttf"),
     BarlowSemiBold: require("../assets/fonts/ttf/Barlow-SemiBold.ttf"),

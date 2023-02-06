@@ -9,7 +9,7 @@ import LoginComponent from '../components/autentication/Login'
 import RegisterComponent from '../components/autentication/Register'
 
 import { isAuth } from '../store/features/loginSlice'
-import { getNonce } from '../store/features/Nonce'
+import { getNonce } from '../store/features/nonceSlice'
 
 
 class Auth extends Component {
