@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Text, View, Dimensions, Animated, ScrollView, Image } from 'react-native'
+import { Text, View, Dimensions, Image } from 'react-native'
 import { connect } from 'react-redux'
 import RenderHtml from 'react-native-render-html'
+
+import {ScrollView } from  'react-native-gesture-handler'
 
 import { getProduct } from '../store/features/productSlice'
 import { styles, SIZES } from '../constants/style'

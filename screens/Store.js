@@ -1,8 +1,7 @@
 import { Text, View } from 'react-native'
 import React, { Component } from 'react'
 import axios from 'axios'
-
-import MasonryList from '@react-native-seoul/masonry-list';
+import MasonryList from '@react-native-seoul/masonry-list'
 
 import env from '../constants/env'
 import Header from '../components/Header'
@@ -55,7 +54,6 @@ export class Store extends Component {
   defaultSettingsSetup() {
 
     const { params } = this.props.route;
-    const { numberposts, page } = this.state;
 
     this.setState({
       prod: [],
@@ -67,9 +65,9 @@ export class Store extends Component {
     }, () => {
 
       this.requestApi({
-        numberposts: numberposts,
-        page: page,
-        category: JSON.stringify(params.term)
+        numberposts: 10,
+        page: 1,
+        category: { slug: params.term.slug },
       });
 
     });
@@ -99,7 +97,7 @@ export class Store extends Component {
     this.requestApi({
       numberposts: numberposts,
       page: page + 1,
-      category: JSON.stringify(params.term)
+      category: { slug: params.term.slug }
     }, true);
   }
 
@@ -107,25 +105,40 @@ export class Store extends Component {
 
     const { prod, isLoaded, hasMore, loadingMore } = this.state;
 
+    const placeholders = [
+      { name: 'Loading...', image_uri: '', price: '' },
+      { name: 'Loading...', image_uri: '', price: '' },
+      { name: 'Loading...', image_uri: '', price: '' },
+      { name: 'Loading...', image_uri: '', price: '' },
+    ]
+
     return (
       <View style={[styles.h_100, styles.bg_secondary]}>
         <Header {...this.props} />
-        {
-          prod && prod.length >= 1
-            ? <MasonryList
-              data={prod}
-              numColumns={2}
-              showsVerticalScrollIndicator={false}
-              renderItem={(product, index) => <ProductArchive key={index} item={product} {...this.props} />}
-              refreshing={!isLoaded}
-              onRefresh={() => this.defaultSettingsSetup()}
-              onEndReached={() => hasMore && !loadingMore ? this.handleLoadMoreResults() : null}
-            />
-            : (isLoaded ? <Text>No products</Text> : null)
+
+        {prod.length > 0
+          ? <MasonryList
+            keyExtractor={(item) => item.id}
+            data={prod}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            renderItem={(product, index) => <ProductArchive key={index} item={product} {...this.props} />}
+            onRefresh={() => this.defaultSettingsSetup()}
+            onEndReached={() => hasMore && !loadingMore ? this.handleLoadMoreResults() : null}
+          />
+          : <MasonryList
+            keyExtractor={(item) => item.id}
+            data={placeholders}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            renderItem={(place, index) => <ProductArchive key={index} loading={true} item={place} />}
+          />
         }
 
+        {/* {!isLoaded ?? <Text>No products</Text>} */}
+
         {loadingMore ? <Text style={{ color: COLORS.white }}>loading...</Text> : null}
-      </View >
+      </View>
     )
   }
 }

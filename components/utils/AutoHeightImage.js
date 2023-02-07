@@ -1,5 +1,10 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import { Image } from "react-native";
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder'
+import { LinearGradient } from 'expo-linear-gradient';
+
+import { styles } from '../../constants/style';
+import { View } from "react-native-web";
 
 export default class AutoHeightImage extends Component {
     constructor(props) {
@@ -29,19 +34,18 @@ export default class AutoHeightImage extends Component {
 
     render() {
 
-        //console.log(this.state.height, this.state.width)
+        const { source, width, height } = this.state;
 
         return (
-            <Image
-                source={this.state.source}
-                style={{ height: this.state.height, width: this.state.width, borderRadius: 12 }}
-            />
+            height > 0
+                ? <Image
+                    source={source}
+                    style={{ height: height, width: width, borderRadius: 12 }}
+                    loadingIndicatorSource={
+                        <ShimmerPlaceHolder LinearGradient={LinearGradient} style={[styles.w_100, styles.pb_1, { height: 100, borderRadius: 12 }]} />
+                    }
+                />
+                : <ShimmerPlaceHolder LinearGradient={LinearGradient} style={[styles.w_100, styles.pb_1, { height: 100, borderRadius: 12 }]} />
         );
     }
 }
-
-// AutoHeightImage.propTypes = {
-//     uri: AutoHeightImage.string.isRequired,
-//     width: AutoHeightImage.number,
-//     height: AutoHeightImage.number
-// };
