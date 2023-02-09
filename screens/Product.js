@@ -3,9 +3,13 @@ import { Text, View, Dimensions, Image } from 'react-native'
 import { connect } from 'react-redux'
 import { ScrollView } from 'react-native-gesture-handler'
 import RenderHtml from 'react-native-render-html'
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder'
+import { LinearGradient } from 'expo-linear-gradient'
 
 import { getProduct } from '../store/features/productSlice'
-import { styles, SIZES } from '../constants/style'
+import { styles, SIZES, COLORS } from '../constants/style'
+import MySlider from '../components/utils/MySlider'
+import AutoHeightImage from '../components/utils/AutoHeightImage'
 
 export class Product extends Component {
 
@@ -22,36 +26,54 @@ export class Product extends Component {
         const { product } = this.props;
         const windowWidth = Dimensions.get('window').width;
 
+        const sliderHeight = 200;
+        const sliderPlace = <ShimmerPlaceHolder visible={product.product.gallery_image_ids > 0} LinearGradient={LinearGradient} style={[styles.m_1, { width: windowWidth - 20, height: sliderHeight, borderRadius: 12 }]} />;
+
         return (
             <View>
-                {
-                    (!product.isLoading ?
-                        <ScrollView>
+                <View style={[styles.my_1, { alignItems: 'center' }]}>
+                    <View style={{ width: 100, height: 5, backgroundColor: COLORS.gray_600, borderRadius: 12 }} />
+                </View>
 
-                            <Text style={[styles.mt_5, { fontSize: SIZES.large }]}>{product.product.name}</Text>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View>
 
-                            {'' !== product.product.price
-                                ? <Text style={[styles.mt_5, { fontSize: SIZES.large }]}>Price: {product.product.price}{product.product.symbol}</Text>
-                                : null
+                        <MySlider
+                            data={!product.isLoading ? product.product.gallery_image_ids : []}
+                            renderItem={({ item }) =>
+                                <View style={[styles.m_1, { width: windowWidth - 20, alignItems: "center" }]}>
+                                    <AutoHeightImage
+                                        uri={item}
+                                        width={windowWidth}
+                                        height={sliderHeight}
+                                    />
+                                </View>
                             }
+                            placeholder={() => sliderPlace}
+                        />
 
-                            {product.product.gallery_image_ids.length
-                                ? product.product.gallery_image_ids.map((image, index) => <Image style={[styles.w_100, { height: 250 }]} key={'img' + index} source={{ uri: image }} />)
-                                : null
-                            }
+                        {!product.isLoading
+                            ?
+                            <View>
+                                {'' !== product.product.price
+                                    ? <Text style={[styles.mt_5, { fontSize: SIZES.large }]}>Price: {product.product.price}{product.product.symbol}</Text>
+                                    : null
+                                }
 
-                            {'' !== product.product.description
-                                ? <RenderHtml
-                                    ignoredDomTags={['iframe', 'script', 'style']}
-                                    contentWidth={windowWidth}
-                                    source={{ html: product.product.description }}
-                                />
-                                : null
-                            }
+                                <Text style={[styles.mt_5, { fontSize: SIZES.large }]}>{product.product.name}</Text>
 
-                        </ScrollView>
-                        : null)
-                }
+                                {'' !== product.product.description
+                                    ? <RenderHtml
+                                        ignoredDomTags={['iframe', 'script', 'style']}
+                                        contentWidth={windowWidth}
+                                        source={{ html: product.product.description }}
+                                    />
+                                    : null
+                                }
+                            </View>
+                            : null}
+                    </View>
+                </ScrollView>
             </View>
         )
     }
@@ -66,6 +88,5 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
     getProduct
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product)

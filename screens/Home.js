@@ -9,6 +9,7 @@ export default class Home extends Component {
         return (
             <View style={styles.d_flex}>
                 <Header {...this.props} />
+
                 <Text style={[styles.my_5, { textAlign: 'center' }]}>Try category in left menu</Text>
             </View>
         )
