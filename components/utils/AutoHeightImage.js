@@ -47,6 +47,7 @@ export default class AutoHeightImage extends Component {
                     ? <Image
                         source={source}
                         style={{ height: height, width: width, borderRadius: 12 }}
+                        resizeMethod="resize"
                         loadingIndicatorSource={
                             <ShimmerPlaceHolder LinearGradient={LinearGradient} style={[styles.w_100, styles.pb_1, { height: height, borderRadius: 12 }]} />
                         }
