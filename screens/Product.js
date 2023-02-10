@@ -40,21 +40,17 @@ export class Product extends Component {
         )
     }
 
-    description({ desc, content_screen }) {
-        console.log(content_screen)
+    description(desc) {
         return (
-            content_screen !== ''
-                ? <AutoHeightImage
-                    uri={content_screen}
-                    width={windowWidth}
+            desc
+                ? <RenderHtml
+                    ignoredDomTags={['iframe', 'script', 'style']}
+                    contentWidth={windowWidth}
+                    source={{ html: desc }}
                 />
-                : desc
-                    ? <RenderHtml
-                        ignoredDomTags={['iframe', 'script', 'style']}
-                        contentWidth={windowWidth}
-                        source={{ html: desc }}
-                    />
-                    : <ShimmerPlaceHolder visible={false} LinearGradient={LinearGradient} style={[styles.mt_2, { width: '100%', height: 250 }]} />
+                : desc.toString().trim() != ''
+                    ? <ShimmerPlaceHolder visible={false} LinearGradient={LinearGradient} style={[styles.mt_2, { width: '100%', height: 250 }]} />
+                    : <Text />
         )
     }
 
@@ -63,7 +59,7 @@ export class Product extends Component {
         const { product, route } = this.props;
         const { image_uri } = route.params.item;
 
-        const sliderHeight = 200;
+        const sliderHeight = 250;
         const sliderPlace = <ShimmerPlaceHolder visible={product.product.gallery_image_ids > 0} LinearGradient={LinearGradient} style={[styles.my_1, { width: windowWidth - 20, height: sliderHeight, borderRadius: 12 }]} />;
 
         return (
@@ -95,11 +91,7 @@ export class Product extends Component {
 
                         {this.title(!product.isLoading ? product.product.name : false)}
 
-                        {this.description(
-                            !product.isLoading
-                                ? { desc: product.product.description, content_screen: product.product.content_screen }
-                                : { desc: false, content_screen: '' }
-                        )}
+                        {this.description(!product.isLoading ? product.product.description : false)}
                     </View>
                 </ScrollView>
             </View>

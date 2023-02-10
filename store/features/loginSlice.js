@@ -27,58 +27,58 @@ const loginSlice = createSlice({
             }
         }
     },
-    extraReducers: {
-        [getLoginToken.pending]: (state) => {
-            if( !state.auth_status ) {
-                state.isLoading = true;
-            }
-        },
-        [getLoginToken.fulfilled]: (state, action) => {
-            if( !state.auth_status && action.payload.token ) {
-                state.isLoading = false;
-                state.auth_status = true;
-                state.token = action.payload.token;
-                state.user_display_name = action.payload.user_display_name;
-                state.user_email = action.payload.user_email;
-                state.user_nicename = action.payload.user_nicename;
-            }
-        },
-        [getLoginToken.rejected]: (state) => {
-            if( state.auth_status ) {
-                state.isLoading = false;
-                state.auth_status = false;
-                state.token = '';
-                state.user_display_name = '';
-                state.user_email = '';
-                state.user_nicename = '';
-            }
-        },
-
-        [isAuth.pending]: (state) => {
-            if( !state.auth_status ) {
-                state.isLoading = true;
-            }
-        },
-        [isAuth.fulfilled]: (state, action) => {
-            if( !state.auth_status && action.payload.token ) {
-                state.isLoading = false;
-                state.auth_status = true;
-                state.token = action.payload.token;
-                state.user_display_name = action.payload.user_display_name;
-                state.user_email = action.payload.user_email;
-                state.user_nicename = action.payload.user_nicename;
-            }
-        },
-        [isAuth.rejected]: (state) => {
-            if( state.auth_status ) {
-                state.isLoading = false;
-                state.auth_status = false;
-                state.token = '';
-                state.user_display_name = '';
-                state.user_email = '';
-                state.user_nicename = '';
-            }
-        },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getLoginToken.pending, (state, action) => {
+                if (!state.auth_status) {
+                    state.isLoading = true;
+                }
+            })
+            .addCase(getLoginToken.fulfilled, (state, action) => {
+                if (!state.auth_status && action.payload.token) {
+                    state.isLoading = false;
+                    state.auth_status = true;
+                    state.token = action.payload.token;
+                    state.user_display_name = action.payload.user_display_name;
+                    state.user_email = action.payload.user_email;
+                    state.user_nicename = action.payload.user_nicename;
+                }
+            })
+            .addCase(getLoginToken.rejected, (state, action) => {
+                if (state.auth_status) {
+                    state.isLoading = false;
+                    state.auth_status = false;
+                    state.token = '';
+                    state.user_display_name = '';
+                    state.user_email = '';
+                    state.user_nicename = '';
+                }
+            })
+            .addCase(isAuth.pending, (state, action) => {
+                if (!state.auth_status) {
+                    state.isLoading = true;
+                }
+            })
+            .addCase(isAuth.fulfilled, (state, action) => {
+                if (!state.auth_status && action.payload.token) {
+                    state.isLoading = false;
+                    state.auth_status = true;
+                    state.token = action.payload.token;
+                    state.user_display_name = action.payload.user_display_name;
+                    state.user_email = action.payload.user_email;
+                    state.user_nicename = action.payload.user_nicename;
+                }
+            })
+            .addCase(isAuth.rejected, (state, action) => {
+                if (state.auth_status) {
+                    state.isLoading = false;
+                    state.auth_status = false;
+                    state.token = '';
+                    state.user_display_name = '';
+                    state.user_email = '';
+                    state.user_nicename = '';
+                }
+            })
     },
 });
 

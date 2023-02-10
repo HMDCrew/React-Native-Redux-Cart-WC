@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Image } from "react-native";
+//import { Image } from 'expo-image';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder'
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -41,9 +42,30 @@ export default class AutoHeightImage extends Component {
 
         const { source, width, height, status } = this.state;
 
+        const blurhash =
+            '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+
+
         return (
             height > 0
                 ? status
+                    // ? <View style={{
+                    //     flex: 1,
+                    //     backgroundColor: '#fff',
+                    //     alignItems: 'center',
+                    //     justifyContent: 'center',
+                    // }}>
+                    //     <Image
+                    //         style={{
+                    //             flex: 1,
+                    //             width: '100%',
+                    //             backgroundColor: '#0553',
+                    //         }}
+                    //         placeholder={blurhash}
+                    //         contentFit='contain'
+                    //         source={source}
+                    //     />
+                    // </View>
                     ? <Image
                         source={source}
                         style={{ height: height, width: width, borderRadius: 12 }}

@@ -12,27 +12,28 @@ const nonceSlice = createSlice({
     name: 'nonce',
     initialState,
     reducers: {},
-    extraReducers: {
-        [getNonce.pending]: (state) => {
-            if (!state.auth_status) {
-                state.isLoaded = false;
-            }
-        },
-        [getNonce.fulfilled]: (state, action) => {
-            if ('success' === action.payload.status) {
-                state.isLoaded = true;
-                state.nonce = action.payload.message;
-            } else {
-                state.isLoaded = false;
-                state.nonce = '';
-            }
-        },
-        [getNonce.rejected]: (state) => {
-            if (state.auth_status) {
-                state.isLoaded = false;
-                state.nonce = '';
-            }
-        },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getNonce.pending, (state, action) => {
+                if (!state.auth_status) {
+                    state.isLoaded = false;
+                }
+            })
+            .addCase(getNonce.fulfilled, (state, action) => {
+                if ('success' === action.payload.status) {
+                    state.isLoaded = true;
+                    state.nonce = action.payload.message;
+                } else {
+                    state.isLoaded = false;
+                    state.nonce = '';
+                }
+            })
+            .addCase(getNonce.rejected, (state, action) => {
+                if (state.auth_status) {
+                    state.isLoaded = false;
+                    state.nonce = '';
+                }
+            })
     },
 });
 

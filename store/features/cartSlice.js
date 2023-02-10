@@ -17,52 +17,50 @@ const cartSlice = createSlice({
             cartItem.quantity = String(payload.qty);
         },
     },
-    extraReducers: {
-        [getCart.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [getCart.fulfilled]: (state, action) => {
-            state.isLoading = false;
-            state.cart = action.payload;
-        },
-        [getCart.rejected]: (state) => {
-            state.isLoading = false;
-            state.cart = [];
-        },
-
-        [addProductCart.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [addProductCart.fulfilled]: (state, action) => {
-            state.isLoading = false;
-            state.cart = action.payload.items;
-        },
-        [addProductCart.rejected]: (state) => {
-            state.isLoading = false;
-            state.cart = [];
-        },
-
-        [updateCart.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [updateCart.fulfilled]: (state, action) => {
-            state.isLoading = false;
-        },
-        [updateCart.rejected]: (state) => {
-            state.isLoading = false;
-        },
-
-        [removeCartProduct.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [removeCartProduct.fulfilled]: (state, action) => {
-            state.isLoading = false;
-            state.cart = action.payload.items;
-        },
-        [removeCartProduct.rejected]: (state) => {
-            state.isLoading = false;
-            state.cart = [];
-        },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getCart.pending, (state, action) => {
+                state.isLoading = true;
+            })
+            .addCase(getCart.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.cart = action.payload;
+            })
+            .addCase(getCart.rejected, (state, action) => {
+                state.isLoading = false;
+                state.cart = [];
+            })
+            .addCase(addProductCart.pending, (state, action) => {
+                state.isLoading = true;
+            })
+            .addCase(addProductCart.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.cart = action.payload.items;
+            })
+            .addCase(addProductCart.rejected, (state, action) => {
+                state.isLoading = false;
+                state.cart = [];
+            })
+            .addCase(updateCart.pending, (state, action) => {
+                state.isLoading = true;
+            })
+            .addCase(updateCart.fulfilled, (state, action) => {
+                state.isLoading = false;
+            })
+            .addCase(updateCart.rejected, (state, action) => {
+                state.isLoading = false;
+            })
+            .addCase(removeCartProduct.pending, (state, action) => {
+                state.isLoading = true;
+            })
+            .addCase(removeCartProduct.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.cart = action.payload.items;
+            })
+            .addCase(removeCartProduct.rejected, (state, action) => {
+                state.isLoading = false;
+                state.cart = [];
+            })
     },
 });
 

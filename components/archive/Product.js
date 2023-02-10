@@ -10,6 +10,8 @@ import { getNonce } from '../../store/features/nonceSlice'
 import { addProductCart } from '../../store/features/cartSlice'
 import AutoHeightImage from '../utils/AutoHeightImage'
 
+// import { Image } from 'expo-image';
+
 
 export class ProductArchive extends Component {
 
@@ -28,6 +30,9 @@ export class ProductArchive extends Component {
         const { item, loading } = this.state;
         const { price, symbol, name, image_uri } = item;
 
+        const blurhash =
+            '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+
         return (
             <TouchableOpacity
                 onPress={() => loading == false ? navigation.navigate('Product', { item }) : false}
@@ -45,6 +50,24 @@ export class ProductArchive extends Component {
                         ? <AutoHeightImage uri={image_uri} style={styles.w_100} box_size={this.state.box_size} width={(this.state.box_size.w - 20)} />
                         : <ShimmerPlaceHolder visible={this.state.box_size.w > 0} LinearGradient={LinearGradient} style={[styles.w_100, styles.pb_1, { height: 100, borderRadius: 12 }]} />
                     }
+
+                    {/* <View style={{
+                        flex: 1,
+                        backgroundColor: '#fff',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                        <Image
+                            style={{
+                                flex: 1,
+                                width: '100%',
+                                backgroundColor: '#0553',
+                            }}
+                            //placeholder={blurhash}
+                            contentFit='contain'
+                            source={source}
+                        />
+                    </View> */}
 
                     <View style={styles.px_1}>
                         {'' !== price

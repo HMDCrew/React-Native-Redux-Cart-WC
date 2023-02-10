@@ -12,19 +12,20 @@ const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {},
-    extraReducers: {
-        [getProduct.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [getProduct.fulfilled]: (state, action) => {
-            if( "success" === action.payload.status ) {
-                state.isLoading = false;
-                state.product = action.payload.message;
-            }
-        },
-        [getProduct.rejected]: (state) => {
-            state.isLoading = true;
-        },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getProduct.pending, (state, action) => {
+                state.isLoading = true;
+            })
+            .addCase(getProduct.fulfilled, (state, action) => {
+                if( "success" === action.payload.status ) {
+                    state.isLoading = false;
+                    state.product = action.payload.message;
+                }
+            })
+            .addCase(getProduct.rejected, (state, action) => {
+                state.isLoading = true;
+            })
     },
 });
 

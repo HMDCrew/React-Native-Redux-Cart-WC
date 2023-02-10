@@ -16,59 +16,56 @@ const chackoutSlice = createSlice({
     name: 'chackout',
     initialState,
     reducers: {},
-    extraReducers: {
-        [getPayments.pending]: (state) => {
-            state.isLoaded = false;
-        },
-        [getPayments.fulfilled]: (state, action) => {
-            state.isLoaded = true;
-            if ('success' === action.payload.status) {
-                state.payments = action.payload.message
-            } else {
+    extraReducers: (builder) => {
+        builder
+            .addCase(getPayments.pending, (state, action) => {
+                state.isLoaded = false;
+            })
+            .addCase(getPayments.fulfilled, (state, action) => {
+                state.isLoaded = true;
+                if ('success' === action.payload.status) {
+                    state.payments = action.payload.message
+                } else {
+                    state.payments = []
+                }
+            })
+            .addCase(getPayments.rejected, (state, action) => {
+                state.isLoaded = true;
                 state.payments = []
-            }
-        },
-        [getPayments.rejected]: (state) => {
-            state.isLoaded = true;
-            state.payments = []
-        },
-
-
-        [getChackoutFields.pending]: (state) => {
-            state.isLoadedFields = false;
-        },
-        [getChackoutFields.fulfilled]: (state, action) => {
-            state.isLoadedFields = true;
-            if ('success' === action.payload.status) {
-                state.fields = action.payload.message
-            } else {
+            })
+            .addCase(getChackoutFields.pending, (state, action) => {
+                state.isLoadedFields = false;
+            })
+            .addCase(getChackoutFields.fulfilled, (state, action) => {
+                state.isLoadedFields = true;
+                if ('success' === action.payload.status) {
+                    state.fields = action.payload.message
+                } else {
+                    state.fields = []
+                }
+            })
+            .addCase(getChackoutFields.rejected, (state, action) => {
+                state.isLoadedFields = true;
                 state.fields = []
-            }
-        },
-        [getChackoutFields.rejected]: (state) => {
-            state.isLoadedFields = true;
-            state.fields = []
-        },
-
-
-        [createOrder.pending]: (state) => {
-            state.isOrderCreated = false;
-            state.order = [];
-        },
-        [createOrder.fulfilled]: (state, action) => {
-            if ('success' === action.payload.status) {
-                state.isOrderCreated = true;
-                state.order = action.payload.message;
-            } else if ("missing fields" === action.payload.message) {
+            })
+            .addCase(createOrder.pending, (state, action) => {
                 state.isOrderCreated = false;
                 state.order = [];
-                state.missingOrderField = action.payload.fields;
-            }
-        },
-        [createOrder.rejected]: (state) => {
-            state.isOrderCreated = false;
-            state.order = [];
-        },
+            })
+            .addCase(createOrder.fulfilled, (state, action) => {
+                if ('success' === action.payload.status) {
+                    state.isOrderCreated = true;
+                    state.order = action.payload.message;
+                } else if ("missing fields" === action.payload.message) {
+                    state.isOrderCreated = false;
+                    state.order = [];
+                    state.missingOrderField = action.payload.fields;
+                }
+            })
+            .addCase(createOrder.rejected, (state, action) => {
+                state.isOrderCreated = false;
+                state.order = [];
+            })
     },
 });
 

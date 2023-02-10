@@ -12,19 +12,20 @@ const taxonomysSlice = createSlice({
     name: 'taxonomys',
     initialState,
     reducers: {},
-    extraReducers: {
-        [getTaxonomys.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [getTaxonomys.fulfilled]: (state, action) => {
-            if( "success" === action.payload.status ) {
-                state.isLoading = false;
-                state.taxonomy = action.payload.message;
-            }
-        },
-        [getTaxonomys.rejected]: (state) => {
-            state.isLoading = true;
-        },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getTaxonomys.pending, (state, action) => {
+                state.isLoading = true;
+            })
+            .addCase(getTaxonomys.fulfilled, (state, action) => {
+                if( "success" === action.payload.status ) {
+                    state.isLoading = false;
+                    state.taxonomy = action.payload.message;
+                }
+            })
+            .addCase(getTaxonomys.rejected, (state, action) => {
+                state.isLoading = true;
+            })
     },
 });
 
