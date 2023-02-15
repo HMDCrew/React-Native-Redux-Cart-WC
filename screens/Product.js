@@ -1,25 +1,38 @@
 import React, { Component } from 'react'
-import { Text, View, Dimensions, Image } from 'react-native'
+import { Text, View, Dimensions, TextInput } from 'react-native'
 import { connect } from 'react-redux'
 import { ScrollView } from 'react-native-gesture-handler'
 import RenderHtml from 'react-native-render-html'
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder'
 import { LinearGradient } from 'expo-linear-gradient'
+import { Button } from '@react-native-material/core'
 
 import { getProduct } from '../store/features/productSlice'
 import { styles, SIZES, COLORS } from '../constants/style'
 import MySlider from '../components/utils/MySlider'
 import AutoHeightImage from '../components/utils/AutoHeightImage'
 
+import { getNonce } from '../store/features/nonceSlice'
+import { addProductCart } from '../store/features/cartSlice'
+
 const windowWidth = Dimensions.get('window').width;
 export class Product extends Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            qty: 1
+        }
     }
 
     componentDidMount() {
         this.props.getProduct(this.props.route.params.item.id);
+    }
+
+    onChangeNumber(qty) {
+        if ('' !== qty) {
+            this.setState({ qty: (qty >= 0 ? qty : 0) })
+        }
     }
 
     price(product) {
@@ -57,20 +70,20 @@ export class Product extends Component {
     render() {
 
         const { product, route } = this.props;
-        const { image_uri } = route.params.item;
+        const { image_uri, id } = route.params.item;
 
         const sliderHeight = 250;
         const sliderPlace = <ShimmerPlaceHolder visible={product.product.gallery_image_ids > 0} LinearGradient={LinearGradient} style={[styles.my_1, { width: windowWidth - 20, height: sliderHeight, borderRadius: 12 }]} />;
 
         return (
-            <View>
-                <View style={[styles.my_1, { alignItems: 'center' }]}>
+            <View style={styles.d_flex}>
+                <View style={[styles.my_1, { flex: 0.01, alignItems: 'center' }]}>
                     <View style={{ width: 100, height: 5, backgroundColor: COLORS.gray_600, borderRadius: 12 }} />
                 </View>
 
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    style={styles.mx_1}>
+                    style={[styles.mx_1, { flex: 0.9 }]}>
                     <View>
 
                         <MySlider
@@ -94,6 +107,40 @@ export class Product extends Component {
                         {this.description(!product.isLoading ? product.product.description : false)}
                     </View>
                 </ScrollView>
+
+                <View style={[styles.my_1, { flex: 0.1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }]}>
+                    <View style={{ height: 36, flexDirection: 'row', marginRight: 10 }}>
+                        <Button
+                            variant="outlined"
+                            title="-"
+                            titleStyle={{ alignContent: 'center', width: 36, padding: 0 }}
+                            color={COLORS.primary}
+                            style={{ padding: 0, width: 36 }}
+                            onPress={() => this.onChangeNumber(Number.parseInt(this.state.qty) - 1)}
+                        />
+                        <TextInput
+                            style={[styles.mx_1, { textAlign: 'center' }]}
+                            onChangeText={qty => this.onChangeNumber(qty)}
+                            value={String(this.state.qty)}
+                            keyboardType="numeric"
+                        />
+                        <Button
+                            variant="outlined"
+                            title="+"
+                            color={COLORS.primary}
+                            titleStyle={{ alignContent: 'center', width: 36, padding: 0 }}
+                            style={{ padding: 0, width: 36 }}
+                            onPress={() => this.onChangeNumber(Number.parseInt(this.state.qty) + 1)}
+                        />
+                    </View>
+                    <Button
+                        title="Add to cart"
+                        color={COLORS.primary}
+                        onPress={() => {
+                            this.props.addProductCart({ id: id, qty: this.state.qty })
+                        }}
+                    />
+                </View>
             </View>
         )
     }
@@ -106,7 +153,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    getProduct
+    getProduct,
+    addProductCart,
+    getNonce
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product)

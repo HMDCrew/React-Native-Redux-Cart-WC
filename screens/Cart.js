@@ -93,9 +93,6 @@ const mapStateToProps = (state) => {
     };
 }
 
-const mapDispatchToProps = {
-    getCart,
-    updateCart,
-}
+const mapDispatchToProps = { getCart, updateCart }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cart)

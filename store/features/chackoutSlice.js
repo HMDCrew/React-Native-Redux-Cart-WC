@@ -23,6 +23,7 @@ const chackoutSlice = createSlice({
             })
             .addCase(getPayments.fulfilled, (state, action) => {
                 state.isLoaded = true;
+                console.log(action.payload)
                 if ('success' === action.payload.status) {
                     state.payments = action.payload.message
                 } else {
@@ -33,6 +34,7 @@ const chackoutSlice = createSlice({
                 state.isLoaded = true;
                 state.payments = []
             })
+
             .addCase(getChackoutFields.pending, (state, action) => {
                 state.isLoadedFields = false;
             })
@@ -48,6 +50,7 @@ const chackoutSlice = createSlice({
                 state.isLoadedFields = true;
                 state.fields = []
             })
+
             .addCase(createOrder.pending, (state, action) => {
                 state.isOrderCreated = false;
                 state.order = [];

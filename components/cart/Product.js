@@ -22,7 +22,7 @@ class ProductCart extends Component {
     }
 
     componentDidUpdate() {
-        if(this.state.qty !== this.props.item.quantity) {
+        if (this.state.qty !== this.props.item.quantity) {
             this.setState({ qty: this.props.item.quantity })
         }
     }
@@ -43,9 +43,10 @@ class ProductCart extends Component {
     render() {
 
         const { item } = this.props;
+        const { precision, price } = item.prices.raw_prices;
 
-        const price = item.prices.price.slice(0, (-1 * item.prices.currency_minor_unit));
-        const price_decimals = item.prices.price.slice((-1 * item.prices.currency_minor_unit));
+        const label_price = price.slice(0, precision - 2);
+        const price_decimals = price.slice(precision - 2, precision);
 
         return (
             <View style={[styles.bg_white, styles.w_100, styles.mt_2, {
@@ -64,7 +65,7 @@ class ProductCart extends Component {
                     <View style={[styles.d_flex, styles.h_100, styles.p_1, { justifyContent: 'center' }]}>
                         <Text style={[styles.mb_1, { fontWeight: '600' }]}>{item.name}</Text>
 
-                        <Text style={styles.mb_1}>{price}{item.prices.currency_thousand_separator}{price_decimals} {item.prices.currency_symbol}</Text>
+                        <Text style={styles.mb_1}>{label_price}{item.prices.currency_thousand_separator}{price_decimals} {item.prices.currency_symbol}</Text>
 
                         <View style={{ height: 36, flexDirection: 'row' }}>
                             <Button

@@ -1,4 +1,4 @@
-import { View, ScrollView, RefreshControl } from 'react-native'
+import { View, ScrollView, FlatList, RefreshControl } from 'react-native'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button, ActivityIndicator } from "@react-native-material/core"
@@ -37,18 +37,21 @@ export class Chackout extends Component {
             <View style={[styles.d_flex, styles.bg_light]}>
                 <Header {...this.props} />
 
+
                 {
                     (isLoaded && payments.stripe && isLoadedFields) ?
                         // console.log(chackout.payments.stripe)
                         <View style={[styles.d_flex]}>
 
-                            <ScrollView
-                                style={[styles.d_flex, {
+                            <FlatList
+
+                                style={[styles.d_flex, styles.w_100, {
                                     marginBottom: 80,
                                     paddingBottom: 50,
                                 }]}
                                 contentContainerStyle={[styles.px_2, {
                                     alignItems: 'center',
+                                    flexGrow: 1
                                 }]}
                                 refreshControl={
                                     <RefreshControl
@@ -58,38 +61,36 @@ export class Chackout extends Component {
                                         }}
                                     />
                                 }
-                            >
-                                {
-                                    Object.entries(fields.billing).map((field, index) => {
+                                data={Object.entries(fields.billing)}
+                                renderItem={({ item, index }) => {
 
-                                        const name = field[0];
-                                        const value = field[1];
+                                    const name = item[0];
+                                    const value = item[1];
 
-                                        return (
-                                            <ChackoutInput
-                                                onChangeText={value => {
+                                    return (
+                                        <ChackoutInput
+                                            onChangeText={value => {
 
-                                                    const index_state = this.state.fields.findIndex(el => el.name === name);
+                                                const index_state = this.state.fields.findIndex(el => el.name === name);
 
-                                                    this.state.fields[index_state] ?
-                                                        // update element
-                                                        [
-                                                            this.state.fields[index_state].value = value,
-                                                            this.setState({ ...this.state.fields })
-                                                        ]
-                                                        :
-                                                        // insert element
-                                                        this.setState({ fields: [...this.state.fields, { name: name, value: value }] })
-                                                }}
-                                                missingOrderField={missingOrderField}
-                                                key={index}
-                                                value={value}
-                                                name={name}
-                                            />
-                                        );
-                                    })
-                                }
-                            </ScrollView>
+                                                this.state.fields[index_state] ?
+                                                    // update element
+                                                    [
+                                                        this.state.fields[index_state].value = value,
+                                                        this.setState({ ...this.state.fields })
+                                                    ]
+                                                    :
+                                                    // insert element
+                                                    this.setState({ fields: [...this.state.fields, { name: name, value: value }] })
+                                            }}
+                                            missingOrderField={missingOrderField}
+                                            key={index}
+                                            value={value}
+                                            name={name}
+                                        />
+                                    );
+                                }}
+                            />
 
                             <Button
                                 title="Order"
