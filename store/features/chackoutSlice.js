@@ -23,7 +23,7 @@ const chackoutSlice = createSlice({
             })
             .addCase(getPayments.fulfilled, (state, action) => {
                 state.isLoaded = true;
-                console.log(action.payload)
+                // console.log(action.payload)
                 if ('success' === action.payload.status) {
                     state.payments = action.payload.message
                 } else {

@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from './axiosMiddleware'
 
 // AsyncStorage.removeItem('login-data')
+// AsyncStorage.removeItem('nonce')
 
 /**
  * Nonce for api requests 
@@ -14,6 +15,19 @@ export const getNonce = createAsyncThunk('store/nonce', async () => {
         if ('success' === response.data.status) {
             AsyncStorage.setItem('nonce', JSON.stringify(response.data))
         }
+        return response.data
+    })
+});
+
+/**
+ * Test api requests
+ */
+export const getTest = createAsyncThunk('wp/test', async () => {
+
+    return await axios.get("wp-json/wpr-test-route").then((response) => {
+
+        // console.log(response.data)
+
         return response.data
     })
 });
@@ -37,9 +51,10 @@ export const getLoginToken = createAsyncThunk('store/login', async ({ user, pass
         }).then((response) => {
             AsyncStorage.setItem('login-data', JSON.stringify(response.data))
             return response.data
-        }).catch((error) => error.json());
+        }).catch((error) => error.response.data);
     }
 });
+
 
 export const isAuth = createAsyncThunk('store/auth', async () => {
 
@@ -71,7 +86,7 @@ export const getTaxonomys = createAsyncThunk('store/taxonomy', async () => {
         }).then((response) => {
             AsyncStorage.setItem('taxonomyMenu', JSON.stringify(response.data))
             return response.data
-        }).catch((error) => error.json());
+        }).catch((error) => error.response.data);
     }
 });
 
@@ -84,8 +99,7 @@ export const getProduct = createAsyncThunk('store/product', async (id) => {
     return await axios.post("wp-json/wpr-get-product", {
         product_id: id
     }).then((response) => response.data)
-        .catch((error) => error.json());
-
+        .catch((error) => error.response.data);
 });
 
 
@@ -94,16 +108,9 @@ export const getProduct = createAsyncThunk('store/product', async (id) => {
  */
 export const getCart = createAsyncThunk('store/cart', async () => {
 
-    return await axios.get("wp-json/wc/store/cart/items/", {
-        headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
-            'Expires': '0',
-        },
-    })
+    return await axios.post("wp-json/wpr-get-cart")
         .then((response) => response.data)
-        .catch((error) => error.json());
+        .catch((error) => error.response.data);
 });
 
 
@@ -112,12 +119,12 @@ export const getCart = createAsyncThunk('store/cart', async () => {
  */
 export const addProductCart = createAsyncThunk('store/cart/add/product', async ({ id, qty }) => {
 
-    return await axios.post("wp-json/wc/store/cart/add-item/", {
-        id: id,
-        quantity: qty
+    return await axios.post("wp-json/wpr-add-to-cart", {
+        product_id: id,
+        qty: qty
     })
         .then((response) => response.data)
-        .catch((error) => error.json());
+        .catch((error) => error.response.data);
 });
 
 
@@ -125,18 +132,9 @@ export const addProductCart = createAsyncThunk('store/cart/add/product', async (
  * API Update Cart
  */
 export const updateCart = createAsyncThunk('store/cart/update', async (cart) => {
-
-    return await axios.post("wp-json/wpr-update-cart", {
-        headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
-            'Expires': '0',
-        },
-        cart
-    })
+    return await axios.post("wp-json/wpr-update-cart", { cart })
         .then((response) => response.data)
-        .catch((error) => error.json());
+        .catch((error) => error.response.data);
 });
 
 

@@ -23,8 +23,10 @@ const cartSlice = createSlice({
                 state.isLoading = true;
             })
             .addCase(getCart.fulfilled, (state, action) => {
+                if ('success' === action.payload.status) {
+                    state.cart = action.payload.message.items;
+                }
                 state.isLoading = false;
-                state.cart = action.payload;
             })
             .addCase(getCart.rejected, (state, action) => {
                 state.isLoading = false;
@@ -34,8 +36,10 @@ const cartSlice = createSlice({
                 state.isLoading = true;
             })
             .addCase(addProductCart.fulfilled, (state, action) => {
+                if ('success' === action.payload.status) {
+                    state.cart = action.payload.message.items;
+                }
                 state.isLoading = false;
-                state.cart = action.payload.items;
             })
             .addCase(addProductCart.rejected, (state, action) => {
                 state.isLoading = false;
@@ -45,6 +49,9 @@ const cartSlice = createSlice({
                 state.isLoading = true;
             })
             .addCase(updateCart.fulfilled, (state, action) => {
+                if ('success' === action.payload.status) {
+                    state.cart = action.payload.message.items;
+                }
                 state.isLoading = false;
             })
             .addCase(updateCart.rejected, (state, action) => {

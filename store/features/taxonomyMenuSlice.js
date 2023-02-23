@@ -19,9 +19,9 @@ const taxonomysSlice = createSlice({
             })
             .addCase(getTaxonomys.fulfilled, (state, action) => {
                 if( "success" === action.payload.status ) {
-                    state.isLoading = false;
                     state.taxonomy = action.payload.message;
                 }
+                state.isLoading = false;
             })
             .addCase(getTaxonomys.rejected, (state, action) => {
                 state.isLoading = true;

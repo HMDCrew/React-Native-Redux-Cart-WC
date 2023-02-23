@@ -43,7 +43,7 @@ export class Header extends Component {
                             {...props}
                         />
                         <IconButton
-                            icon={props => <Icon name="cart-outline" {...props} ><Text>{cart.cart.length}</Text></Icon>}
+                            icon={props => <Icon name="cart-outline" {...props} ><Text>{cart?.cart?.length}</Text></Icon>}
                             onPress={() => navigation.navigate('Cart')}
                             {...props}
                         />

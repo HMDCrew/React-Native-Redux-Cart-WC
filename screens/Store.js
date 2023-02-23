@@ -8,6 +8,9 @@ import Header from '../components/Header'
 import { styles, COLORS } from '../constants/style'
 import ProductArchive from '../components/archive/Product'
 
+import { connect } from 'react-redux'
+import { getTest } from '../store/features/testSlice'
+
 export class Store extends Component {
 
   constructor(props) {
@@ -64,16 +67,16 @@ export class Store extends Component {
       loadingMore: false,
     }, () => {
 
-      this.requestApi({
-        numberposts: 10,
-        page: 1,
-        category: { slug: params.term.slug },
-      });
+      let args = { numberposts: 10, page: 1 }
 
+      params?.term?.slug ? args.category = { slug: params.term.slug } : null
+
+      this.requestApi(args);
     });
   }
 
   componentDidMount() {
+    this.props.getTest()
     this.defaultSettingsSetup();
   }
 
@@ -82,7 +85,7 @@ export class Store extends Component {
     const { params } = this.props.route;
     const oldParms = prevProps.route.params;
 
-    if (params && oldParms && params.term.slug !== oldParms.term.slug) {
+    if (params && oldParms && params?.term?.slug !== oldParms?.term?.slug) {
       this.defaultSettingsSetup();
     }
   }
@@ -94,11 +97,11 @@ export class Store extends Component {
     const { numberposts, page } = this.state;
     const { params } = this.props.route;
 
-    this.requestApi({
-      numberposts: numberposts,
-      page: page + 1,
-      category: { slug: params.term.slug }
-    }, true);
+    let args = { numberposts: numberposts, page: page + 1 }
+
+    params?.term?.slug ? args.category = { slug: params.term.slug } : null
+
+    this.requestApi(args, true);
   }
 
   render() {
@@ -143,4 +146,14 @@ export class Store extends Component {
   }
 }
 
-export default Store
+const mapStateToProps = (state) => {
+  return {
+    test: state.test.isLoading,
+  };
+}
+
+const mapDispatchToProps = {
+  getTest
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Store)

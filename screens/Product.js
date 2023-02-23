@@ -12,7 +12,6 @@ import { styles, SIZES, COLORS } from '../constants/style'
 import MySlider from '../components/utils/MySlider'
 import AutoHeightImage from '../components/utils/AutoHeightImage'
 
-import { getNonce } from '../store/features/nonceSlice'
 import { addProductCart } from '../store/features/cartSlice'
 
 const windowWidth = Dimensions.get('window').width;
@@ -154,8 +153,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     getProduct,
-    addProductCart,
-    getNonce
+    addProductCart
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product)

@@ -49,7 +49,7 @@ class Auth extends Component {
         const { navigation } = this.props;
 
         if (this.props.login.auth_status) {
-            navigation.navigate('Home')
+            navigation.navigate('STACK')
         }
         if (false === this.props.login.auth_status && !this.props.login.isLoaded) {
             ToastAndroid.show('Login falied', ToastAndroid.SHORT);

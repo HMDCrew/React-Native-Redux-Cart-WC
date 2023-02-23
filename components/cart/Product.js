@@ -33,7 +33,7 @@ class ProductCart extends Component {
             const { item } = this.props;
 
             const quantity = (qty >= 0 ? qty : 0);
-            const limit_max_qty = String(quantity <= item.quantity_limits.maximum ? quantity : item.quantity_limits.maximum);
+            const limit_max_qty = String(null != item.max_qty && quantity >= item.max_qty ? item.max_qty : quantity);
             this.props.updateQuantity({ id: item.id, qty: limit_max_qty })
 
             this.setState({ qty: limit_max_qty })
@@ -43,10 +43,6 @@ class ProductCart extends Component {
     render() {
 
         const { item } = this.props;
-        const { precision, price } = item.prices.raw_prices;
-
-        const label_price = price.slice(0, precision - 2);
-        const price_decimals = price.slice(precision - 2, precision);
 
         return (
             <View style={[styles.bg_white, styles.w_100, styles.mt_2, {
@@ -57,7 +53,7 @@ class ProductCart extends Component {
             }]}>
 
                 <View style={[styles.w_100, { flex: 0.5 }]}>
-                    <Image source={{ uri: (item.images.length ? item.images[0].src : 'https://www.pulsecarshalton.co.uk/wp-content/uploads/2016/08/jk-placeholder-image.jpg') }} style={{ height: 200 }} resizeMode='cover' />
+                    <Image source={{ uri: (null !== item.image ? item.image : 'https://www.pulsecarshalton.co.uk/wp-content/uploads/2016/08/jk-placeholder-image.jpg') }} style={{ height: 200 }} resizeMode='cover' />
                 </View>
 
                 <View style={[styles.w_100, styles.h_100, { flex: 0.5 }]}>
@@ -65,7 +61,7 @@ class ProductCart extends Component {
                     <View style={[styles.d_flex, styles.h_100, styles.p_1, { justifyContent: 'center' }]}>
                         <Text style={[styles.mb_1, { fontWeight: '600' }]}>{item.name}</Text>
 
-                        <Text style={styles.mb_1}>{label_price}{item.prices.currency_thousand_separator}{price_decimals} {item.prices.currency_symbol}</Text>
+                        <Text style={styles.mb_1}>{item.price} {item.symbol}</Text>
 
                         <View style={{ height: 36, flexDirection: 'row' }}>
                             <Button

@@ -11,8 +11,8 @@ export class LoginComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: '',
-            password: '',
+            email: 'andrei.leca55@gmail.com',
+            password: '123456789',
             loading: false,
             is_visible_password: false
         }

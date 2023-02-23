@@ -7,9 +7,6 @@ import { styles, SIZES } from '../../constants/style';
 
 import AutoHeightImage from '../utils/AutoHeightImage'
 
-// import { Image } from 'expo-image';
-
-
 export class ProductArchive extends Component {
 
     constructor(props) {
