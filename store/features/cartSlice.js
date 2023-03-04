@@ -23,6 +23,7 @@ const cartSlice = createSlice({
                 state.isLoading = true;
             })
             .addCase(getCart.fulfilled, (state, action) => {
+                //console.log(action.payload)
                 if ('success' === action.payload.status) {
                     state.cart = action.payload.message.items;
                 }
@@ -36,6 +37,7 @@ const cartSlice = createSlice({
                 state.isLoading = true;
             })
             .addCase(addProductCart.fulfilled, (state, action) => {
+                //console.log(action.payload)
                 if ('success' === action.payload.status) {
                     state.cart = action.payload.message.items;
                 }

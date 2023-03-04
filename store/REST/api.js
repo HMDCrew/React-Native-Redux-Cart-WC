@@ -6,6 +6,21 @@ import axios from './axiosMiddleware'
 // AsyncStorage.removeItem('login-data')
 // AsyncStorage.removeItem('nonce')
 
+const auth_user_mixer = async (args) => {
+
+    const login_data = await AsyncStorage.getItem('login-data');
+
+    if (null !== login_data) {
+        const { user_id } = JSON.parse(login_data)
+        return { ...args, user_id }
+    }
+
+    return {
+        'status': 'error',
+        'message': 'local auth error',
+    };
+}
+
 /**
  * Nonce for api requests 
  */
@@ -40,6 +55,8 @@ export const getLoginToken = createAsyncThunk('store/login', async ({ user, pass
 
     const login_data = await AsyncStorage.getItem('login-data');
 
+    // console.log(login_data)
+
     if (null !== login_data) {
 
         return JSON.parse(login_data);
@@ -59,6 +76,8 @@ export const getLoginToken = createAsyncThunk('store/login', async ({ user, pass
 export const isAuth = createAsyncThunk('store/auth', async () => {
 
     const login_data = await AsyncStorage.getItem('login-data');
+
+    //console.log(login_data)
 
     if (null !== login_data) {
         return JSON.parse(login_data);
@@ -107,10 +126,10 @@ export const getProduct = createAsyncThunk('store/product', async (id) => {
  * API Cart
  */
 export const getCart = createAsyncThunk('store/cart', async () => {
-
-    return await axios.post("wp-json/wpr-get-cart")
+    return await axios.post("wp-json/wpr-get-cart",
+        await auth_user_mixer({}))
         .then((response) => response.data)
-        .catch((error) => error.response.data);
+        .catch((error) => error.response);
 });
 
 
@@ -118,11 +137,11 @@ export const getCart = createAsyncThunk('store/cart', async () => {
  * API Add Product Cart
  */
 export const addProductCart = createAsyncThunk('store/cart/add/product', async ({ id, qty }) => {
-
-    return await axios.post("wp-json/wpr-add-to-cart", {
-        product_id: id,
-        qty: qty
-    })
+    return await axios.post("wp-json/wpr-add-to-cart",
+        await auth_user_mixer({
+            product_id: id,
+            qty: qty
+        }))
         .then((response) => response.data)
         .catch((error) => error.response.data);
 });
@@ -132,7 +151,10 @@ export const addProductCart = createAsyncThunk('store/cart/add/product', async (
  * API Update Cart
  */
 export const updateCart = createAsyncThunk('store/cart/update', async (cart) => {
-    return await axios.post("wp-json/wpr-update-cart", { cart })
+    return await axios.post("wp-json/wpr-update-cart",
+        await auth_user_mixer({
+            cart
+        }))
         .then((response) => response.data)
         .catch((error) => error.response.data);
 });
@@ -142,10 +164,10 @@ export const updateCart = createAsyncThunk('store/cart/update', async (cart) => 
  * API Remove Cart Product
  */
 export const removeCartProduct = createAsyncThunk('store/cart/remove/product', async (cart_prod_key) => {
-
-    return await axios.post("wp-json/wc/store/cart/remove-item/", {
-        key: cart_prod_key
-    })
+    return await axios.post("wp-json/wc/store/cart/remove-item/",
+        await auth_user_mixer({
+            key: cart_prod_key
+        }))
         .then((response) => response.data)
         .catch((error) => error.json());
 });
@@ -155,17 +177,16 @@ export const removeCartProduct = createAsyncThunk('store/cart/remove/product', a
  * API Chackout get Fields
  */
 export const getChackoutFields = createAsyncThunk('store/chackout/fields', async () => {
-
     return await axios.get("wp-json/wpr-chackout-fields")
         .then((response) => response.data)
         .catch((error) => error.json());
 });
 
+
 /**
  * API Chackout get Payments
  */
 export const getPayments = createAsyncThunk('store/chackout/payments', async () => {
-
     return await axios.get("wp-json/wpr-payment-gateway")
         .then((response) => response.data)
         .catch((error) => error.json());
@@ -176,10 +197,10 @@ export const getPayments = createAsyncThunk('store/chackout/payments', async () 
  * API create new Order
  */
 export const createOrder = createAsyncThunk('store/order/new', async ({ cart, form_fields }) => {
-
-    return await axios.post("wp-json/wpr-create-order", {
-        cart, form_fields
-    })
+    return await axios.post("wp-json/wpr-create-order",
+        await auth_user_mixer({
+            cart, form_fields
+        }))
         .then((response) => response.data)
         .catch((error) => error.json());
 });
