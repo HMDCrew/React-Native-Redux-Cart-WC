@@ -20,7 +20,7 @@ export class LoginComponent extends Component {
 
     hundleLogin() {
         this.setState({ loading: true });
-        this.props.getLoginToken({ user: this.state.email, passwd: this.state.password })
+        this.props.getLoginToken({ email: this.state.email, passwd: this.state.password })
     }
 
     render() {

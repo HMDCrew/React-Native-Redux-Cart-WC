@@ -13,7 +13,7 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         updateQuantity: (state, { payload }) => {
-            const cartItem = state.cart.find((item) => item.id === payload.id);
+            const cartItem = state.cart.find((item) => item.product_id === payload.product_id);
             cartItem.quantity = String(payload.qty);
         },
     },
@@ -23,9 +23,8 @@ const cartSlice = createSlice({
                 state.isLoading = true;
             })
             .addCase(getCart.fulfilled, (state, action) => {
-                //console.log(action.payload)
-                if ('success' === action.payload.status) {
-                    state.cart = action.payload.message.items;
+                if ('success' === action.payload?.status) {
+                    state.cart = action.payload?.message?.items;
                 }
                 state.isLoading = false;
             })
@@ -33,11 +32,11 @@ const cartSlice = createSlice({
                 state.isLoading = false;
                 state.cart = [];
             })
+
             .addCase(addProductCart.pending, (state, action) => {
                 state.isLoading = true;
             })
             .addCase(addProductCart.fulfilled, (state, action) => {
-                //console.log(action.payload)
                 if ('success' === action.payload.status) {
                     state.cart = action.payload.message.items;
                 }
@@ -47,6 +46,7 @@ const cartSlice = createSlice({
                 state.isLoading = false;
                 state.cart = [];
             })
+
             .addCase(updateCart.pending, (state, action) => {
                 state.isLoading = true;
             })

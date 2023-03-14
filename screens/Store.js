@@ -50,7 +50,7 @@ export class Store extends Component {
         }
       }
     } catch (error) {
-      console.log("Error", error);
+      console.log("Error", error.data);
     }
   }
 

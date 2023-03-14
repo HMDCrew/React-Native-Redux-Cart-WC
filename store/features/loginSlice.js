@@ -17,11 +17,11 @@ const loginSlice = createSlice({
     initialState,
     reducers: {
         componentLogin: (state, { payload }) => {
-            if ("success" === payload.status) {
-                state.token = payload.message.data.token;
-                state.user_display_name = payload.message.data.display_name;
-                state.user_email = payload.message.data.user_email;
-                state.user_nicename = payload.message.data.user_nicename;
+            if (payload?.success) {
+                state.token = payload.jwt;
+                state.user_display_name = payload.user.display_name;
+                state.user_email = payload.user.user_email;
+                state.user_nicename = payload.user.user_nicename;
                 state.auth_status = true;
                 state.isLoading = false;
             }
@@ -35,7 +35,7 @@ const loginSlice = createSlice({
                 }
             })
             .addCase(getLoginToken.fulfilled, (state, action) => {
-                if (!state.auth_status && action.payload.token) {
+                if (!state.auth_status && action.payload?.token) {
                     state.isLoading = false;
                     state.auth_status = true;
                     state.token = action.payload.token;
@@ -60,11 +60,11 @@ const loginSlice = createSlice({
                 }
             })
             .addCase(isAuth.fulfilled, (state, action) => {
-                if (!state.auth_status && action.payload.token) {
+                if (!state.auth_status && action.payload?.jwt) {
                     state.isLoading = false;
                     state.auth_status = true;
-                    state.token = action.payload.token;
-                    state.user_display_name = action.payload.user_display_name;
+                    state.token = action.payload.jwt;
+                    state.user_display_name = action.payload.user_login;
                     state.user_email = action.payload.user_email;
                     state.user_nicename = action.payload.user_nicename;
                 }

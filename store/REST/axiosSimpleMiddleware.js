@@ -1,6 +1,4 @@
 import axios from 'axios'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import env from "../../constants/env"
 
 axios.interceptors.request.use(
@@ -12,18 +10,6 @@ axios.interceptors.request.use(
         config.headers['Cache-Control'] = 'no-cache';
         config.headers['Pragma'] = 'no-cache';
         config.headers['Expires'] = '0';
-
-        const login_data = await AsyncStorage.getItem('login-data');
-        if (null !== login_data) {
-            const { jwt } = JSON.parse(login_data)
-            config.headers.Authorization = `Bearer ${jwt}`
-        }
-
-        const nonce_script = await AsyncStorage.getItem('nonce');
-        if (null !== nonce_script) {
-            const { message } = JSON.parse(nonce_script)
-            config.headers['X-WC-Store-API-Nonce'] = message
-        }
 
         return config
     },

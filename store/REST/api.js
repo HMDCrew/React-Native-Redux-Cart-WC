@@ -11,8 +11,8 @@ const auth_user_mixer = async (args) => {
     const login_data = await AsyncStorage.getItem('login-data');
 
     if (null !== login_data) {
-        const { user_id } = JSON.parse(login_data)
-        return { ...args, user_id }
+        const { id } = JSON.parse(login_data)
+        return { ...args, user_id: id }
     }
 
     return {
@@ -26,12 +26,12 @@ const auth_user_mixer = async (args) => {
  */
 export const getNonce = createAsyncThunk('store/nonce', async () => {
 
-    return await axios.get("wp-json/wpr-get-nonce").then((response) => {
-        if ('success' === response.data.status) {
-            AsyncStorage.setItem('nonce', JSON.stringify(response.data))
-        }
-        return response.data
-    })
+    // return await axios.get("wp-json/wpr-get-nonce").then((response) => {
+    //     if ('success' === response.data.status) {
+    //         AsyncStorage.setItem('nonce', JSON.stringify(response.data))
+    //     }
+    //     return response.data
+    // })
 });
 
 /**
@@ -39,36 +39,34 @@ export const getNonce = createAsyncThunk('store/nonce', async () => {
  */
 export const getTest = createAsyncThunk('wp/test', async () => {
 
-    return await axios.get("wp-json/wpr-test-route").then((response) => {
+    // return await axios.get("wp-json/wpr-test-route").then((response) => {
 
-        // console.log(response.data)
+    //     // console.log(response.data)
 
-        return response.data
-    })
+    //     return response.data
+    // })
 });
 
 
 /**
  * Auth section
  */
-export const getLoginToken = createAsyncThunk('store/login', async ({ user, passwd }) => {
+export const getLoginToken = createAsyncThunk('store/login', async ({ email, passwd }) => {
 
     const login_data = await AsyncStorage.getItem('login-data');
-
-    // console.log(login_data)
 
     if (null !== login_data) {
 
         return JSON.parse(login_data);
 
     } else {
-        return await axios.post("wp-json/jwt-auth/v1/token", {
-            username: user,
+        return await axios.post("wp-json/simple-jwt-login/v1/auth", {
+            email: email,
             password: passwd
         }).then((response) => {
             AsyncStorage.setItem('login-data', JSON.stringify(response.data))
             return response.data
-        }).catch((error) => error.response.data);
+        }).catch((error) => error.data);
     }
 });
 
@@ -77,10 +75,27 @@ export const isAuth = createAsyncThunk('store/auth', async () => {
 
     const login_data = await AsyncStorage.getItem('login-data');
 
-    //console.log(login_data)
-
     if (null !== login_data) {
-        return JSON.parse(login_data);
+
+        let user = JSON.parse(login_data);
+
+        await axios.post("wp-json/simple-jwt-login/v1/auth/validate")
+            .then(async (response) => {
+                if (!response.data?.success) {
+                    await axios.post("wp-json/simple-jwt-login/v1/auth/refresh")
+                        .then((refresh_token) => {
+                            if (refresh_token.data?.success) {
+                                user.jwt = refresh_token.data?.data?.jwt
+                                AsyncStorage.setItem('login-data', JSON.stringify(user))
+                            }
+                        })
+                }
+                return response.data
+            })
+            .catch((error) => {
+                return error;
+            });
+        return user;
     }
 
     return false;
@@ -105,7 +120,7 @@ export const getTaxonomys = createAsyncThunk('store/taxonomy', async () => {
         }).then((response) => {
             AsyncStorage.setItem('taxonomyMenu', JSON.stringify(response.data))
             return response.data
-        }).catch((error) => error.response.data);
+        }).catch((error) => error.data);
     }
 });
 
@@ -118,7 +133,7 @@ export const getProduct = createAsyncThunk('store/product', async (id) => {
     return await axios.post("wp-json/wpr-get-product", {
         product_id: id
     }).then((response) => response.data)
-        .catch((error) => error.response.data);
+        .catch((error) => error.data);
 });
 
 
@@ -129,7 +144,7 @@ export const getCart = createAsyncThunk('store/cart', async () => {
     return await axios.post("wp-json/wpr-get-cart",
         await auth_user_mixer({}))
         .then((response) => response.data)
-        .catch((error) => error.response);
+        .catch((error) => error.data);
 });
 
 
@@ -143,7 +158,7 @@ export const addProductCart = createAsyncThunk('store/cart/add/product', async (
             qty: qty
         }))
         .then((response) => response.data)
-        .catch((error) => error.response.data);
+        .catch((error) => error.data);
 });
 
 
@@ -156,7 +171,7 @@ export const updateCart = createAsyncThunk('store/cart/update', async (cart) => 
             cart
         }))
         .then((response) => response.data)
-        .catch((error) => error.response.data);
+        .catch((error) => error.data);
 });
 
 
@@ -169,7 +184,7 @@ export const removeCartProduct = createAsyncThunk('store/cart/remove/product', a
             key: cart_prod_key
         }))
         .then((response) => response.data)
-        .catch((error) => error.json());
+        .catch((error) => error.data);
 });
 
 
@@ -179,7 +194,7 @@ export const removeCartProduct = createAsyncThunk('store/cart/remove/product', a
 export const getChackoutFields = createAsyncThunk('store/chackout/fields', async () => {
     return await axios.get("wp-json/wpr-chackout-fields")
         .then((response) => response.data)
-        .catch((error) => error.json());
+        .catch((error) => error.data);
 });
 
 
@@ -189,7 +204,7 @@ export const getChackoutFields = createAsyncThunk('store/chackout/fields', async
 export const getPayments = createAsyncThunk('store/chackout/payments', async () => {
     return await axios.get("wp-json/wpr-payment-gateway")
         .then((response) => response.data)
-        .catch((error) => error.json());
+        .catch((error) => data);
 });
 
 
@@ -202,5 +217,5 @@ export const createOrder = createAsyncThunk('store/order/new', async ({ cart, fo
             cart, form_fields
         }))
         .then((response) => response.data)
-        .catch((error) => error.json());
+        .catch((error) => error.data);
 });

@@ -15,14 +15,11 @@ export class RegisterComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            username: '',
             email: '',
             password: '',
-            repeat_password: '',
             is_valid_email: false,
             loading: false,
             is_visible_password: false,
-            is_visible_repeat_password: false,
             is_valid_passwords: false,
             isLoaded: false,
         }
@@ -32,14 +29,12 @@ export class RegisterComponent extends Component {
         this.setState({ loading: true });
         try {
 
-            const { username, email, password, repeat_password } = this.state;
+            const { email, password } = this.state;
 
-            let response = await axios.post(env.SITE_URL + "wp-json/wpr-register", {
-                username: username,
+            let response = await axios.post(env.SITE_URL + "wp-json/simple-jwt-login/v1/users", {
                 email: email,
                 password: password,
-                repeat_password: repeat_password,
-                plugin_token: 'MySuperSecretToken',
+                MY_SUPER_SECRET_KEY: 'AUTH_KEY_VALUE',
             }).then((response) => response.data);
 
             this.props.componentLogin(response);
@@ -64,20 +59,9 @@ export class RegisterComponent extends Component {
         }
     }
 
-    validatePasswords(repeat_password) {
-
-        this.setState({ repeat_password })
-
-        if (this.state.password !== repeat_password) {
-            this.setState({ is_valid_passwords: true });
-        } else {
-            this.setState({ is_valid_passwords: false });
-        }
-    }
-
     render() {
 
-        const { loading, is_visible_password, is_visible_repeat_password, is_valid_passwords, username, email, password, repeat_password, is_valid_email } = this.state;
+        const { loading, is_visible_password, email, password, is_valid_email } = this.state;
 
         return (
 
@@ -85,14 +69,6 @@ export class RegisterComponent extends Component {
 
                 <Text variant="h5" style={styles.pb_4}>Register</Text>
 
-                <TextInput
-                    label="username"
-                    onChangeText={(username) => this.setState({ username })}
-                    leading={props => <Icon name="account" {...props} />}
-                    value={username}
-                    style={styles.pb_2}
-                    color={COLORS.primary}
-                    placeholder="username" />
                 <TextInput
                     label="email"
                     helperText={<Text style={{ fontSize: 12, color: COLORS.danger }}>{is_valid_email ? 'chack the email' : ''}</Text>}
@@ -112,19 +88,6 @@ export class RegisterComponent extends Component {
                     )}
                     value={password}
                     secureTextEntry={!is_visible_password}
-                    placeholder="password" />
-                <TextInput
-                    label="repeat password"
-                    helperText={<Text style={{ fontSize: 12, color: COLORS.danger }}>{is_valid_passwords ? 'Please chack the passwords' : ''}</Text>}
-                    onChangeText={(repeat_password) => this.validatePasswords(repeat_password)}
-                    leading={props => <Icon name="key" {...props} />}
-                    style={styles.pb_2}
-                    color={COLORS.primary}
-                    trailing={props => (
-                        <IconButton icon={props => <Icon name="eye" {...props} />} {...props} onPress={() => this.setState({ is_visible_repeat_password: !is_visible_repeat_password })} />
-                    )}
-                    value={repeat_password}
-                    secureTextEntry={!is_visible_repeat_password}
                     placeholder="password" />
 
                 <HStack spacing={2}>

@@ -18,7 +18,7 @@ const productSlice = createSlice({
                 state.isLoading = true;
             })
             .addCase(getProduct.fulfilled, (state, action) => {
-                if( "success" === action.payload.status ) {
+                if( "success" === action.payload?.status ) {
                     state.isLoading = false;
                     state.product = action.payload.message;
                 }

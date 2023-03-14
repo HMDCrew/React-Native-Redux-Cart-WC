@@ -29,12 +29,12 @@ class ProductCart extends Component {
 
     onChangeNumber(qty) {
         if ('' !== qty) {
-
+            
             const { item } = this.props;
 
             const quantity = (qty >= 0 ? qty : 0);
             const limit_max_qty = String(null != item.max_qty && quantity >= item.max_qty ? item.max_qty : quantity);
-            this.props.updateQuantity({ id: item.id, qty: limit_max_qty })
+            this.props.updateQuantity({ product_id: item.product_id, qty: limit_max_qty })
 
             this.setState({ qty: limit_max_qty })
         }

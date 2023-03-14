@@ -20,7 +20,7 @@ const nonceSlice = createSlice({
                 }
             })
             .addCase(getNonce.fulfilled, (state, action) => {
-                if ('success' === action.payload.status) {
+                if ('success' === action.payload?.status) {
                     state.isLoaded = true;
                     state.nonce = action.payload.message;
                 } else {
