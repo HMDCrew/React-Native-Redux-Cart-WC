@@ -8,6 +8,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/metro-config": "^0.7.1",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-material/core": "^1.3.7",
     "@react-native-seoul/masonry-list": "^1.4.1",
@@ -29,6 +30,7 @@
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-dropdown-select-list": "^2.0.4",
     "react-native-gesture-handler": "~2.8.0",
     "react-native-reanimated": "~2.12.0",
     "react-native-render-html": "^6.3.4",

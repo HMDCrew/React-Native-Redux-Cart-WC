@@ -35,10 +35,10 @@ const loginSlice = createSlice({
                 }
             })
             .addCase(getLoginToken.fulfilled, (state, action) => {
-                if (!state.auth_status && action.payload?.token) {
+                if (!state.auth_status && action.payload?.jwt) {
                     state.isLoading = false;
                     state.auth_status = true;
-                    state.token = action.payload.token;
+                    state.token = action.payload.jwt;
                     state.user_display_name = action.payload.user_display_name;
                     state.user_email = action.payload.user_email;
                     state.user_nicename = action.payload.user_nicename;

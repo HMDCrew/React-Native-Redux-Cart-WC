@@ -1,4 +1,4 @@
-import { View, ScrollView, FlatList, RefreshControl } from 'react-native'
+import { View, FlatList, RefreshControl } from 'react-native'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button, ActivityIndicator } from "@react-native-material/core"
@@ -6,6 +6,7 @@ import { Button, ActivityIndicator } from "@react-native-material/core"
 import { styles, COLORS } from '../constants/style'
 import Header from '../components/Header'
 import ChackoutInput from '../components/chackout/ChackoutInput';
+import ChackoutSelect from '../components/chackout/ChackoutSelect';
 
 import { getChackoutFields, getPayments, createOrder } from '../store/features/chackoutSlice'
 
@@ -15,6 +16,7 @@ export class Chackout extends Component {
         super(props)
         this.state = {
             fields: [],
+            country: [],
         }
     }
 
@@ -29,18 +31,34 @@ export class Chackout extends Component {
         }
     }
 
+    updateCountryField(field_name, field_value) {
+        this.updateStateFields(field_name, field_value)
+        this.setState({ country: field_value })
+    }
+
+    updateStateFields(field_name, field_value) {
+        const index_state = this.state.fields.findIndex(el => el.name === field_name);
+
+        this.state.fields[index_state] ?
+            // update element
+            [
+                this.state.fields[index_state].value = field_value,
+                this.setState({ ...this.state.fields })
+            ]
+            :
+            // insert element
+            this.setState({ fields: [...this.state.fields, { name: field_name, value: field_value }] })
+    }
+
     render() {
 
-        const { isLoaded, payments, isLoadedFields, fields, cart, missingOrderField } = this.props;
+        const { isLoaded, payments, isLoadedFields, fields, missingOrderField } = this.props;
 
         return (
             <View style={[styles.d_flex, styles.bg_light]}>
                 <Header {...this.props} />
-
-
                 {
                     (isLoaded && payments.stripe && isLoadedFields) ?
-                        // console.log(chackout.payments.stripe)
                         <View style={[styles.d_flex]}>
 
                             <FlatList
@@ -67,22 +85,31 @@ export class Chackout extends Component {
                                     const name = item[0];
                                     const value = item[1];
 
+                                    if ('billing_country' === name) {
+                                        return (
+                                            <ChackoutSelect
+                                                setSelected={value => this.updateCountryField(name, value)}
+                                                data={fields.countries}
+                                                placeholder={'Select County'}
+                                                defaultOption={fields.countries[0]}
+                                            />
+                                        );
+                                    }
+
+                                    if ('billing_state' === name) {
+                                        return (
+                                            <ChackoutSelect
+                                                setSelected={value => this.updateStateFields(name, value)}
+                                                data={fields.states[this.state.country]}
+                                                placeholder={'Select State'}
+                                                defaultOption={fields.states[this.state.country]}
+                                            />
+                                        );
+                                    }
+
                                     return (
                                         <ChackoutInput
-                                            onChangeText={value => {
-
-                                                const index_state = this.state.fields.findIndex(el => el.name === name);
-
-                                                this.state.fields[index_state] ?
-                                                    // update element
-                                                    [
-                                                        this.state.fields[index_state].value = value,
-                                                        this.setState({ ...this.state.fields })
-                                                    ]
-                                                    :
-                                                    // insert element
-                                                    this.setState({ fields: [...this.state.fields, { name: name, value: value }] })
-                                            }}
+                                            onChangeText={value => this.updateStateFields(name, value)}
                                             missingOrderField={missingOrderField}
                                             key={index}
                                             value={value}
@@ -97,7 +124,7 @@ export class Chackout extends Component {
                                 color={COLORS.primary}
                                 contentContainerStyle={styles.h_100}
                                 onPress={() => {
-                                    this.props.createOrder({ cart: cart, form_fields: this.state.fields })
+                                    this.props.createOrder({ form_fields: this.state.fields })
                                 }}
                                 style={{
                                     alignSelf: 'center',
@@ -126,7 +153,6 @@ const mapStateToProps = (state) => {
         missingOrderField: state.chackout.missingOrderField,
         isLoadedFields: state.chackout.isLoadedFields,
         isOrderCreated: state.chackout.isOrderCreated,
-        cart: state.cart,
         login: state.login,
     };
 }

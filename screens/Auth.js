@@ -9,7 +9,6 @@ import LoginComponent from '../components/autentication/Login'
 import RegisterComponent from '../components/autentication/Register'
 
 import { isAuth } from '../store/features/loginSlice'
-import { getNonce } from '../store/features/nonceSlice'
 
 
 class Auth extends Component {
@@ -27,7 +26,6 @@ class Auth extends Component {
     }
 
     componentDidMount() {
-        this.props.getNonce();
         this.props.isAuth();
 
         const { navigation, login } = this.props;
@@ -106,14 +104,10 @@ const mapStateToProps = (state) => {
             isLoaded: state.login.isLoading,
             auth_status: state.login.auth_status,
             full: state.login
-        },
-        nonce: state.nonce
+        }
     };
 }
 
-const mapDispatchToProps = {
-    isAuth,
-    getNonce
-}
+const mapDispatchToProps = { isAuth }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth)

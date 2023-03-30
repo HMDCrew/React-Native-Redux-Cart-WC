@@ -56,6 +56,7 @@ const chackoutSlice = createSlice({
                 state.order = [];
             })
             .addCase(createOrder.fulfilled, (state, action) => {
+                console.log(action.payload)
                 if ('success' === action.payload.status) {
                     state.isOrderCreated = true;
                     state.order = action.payload.message;

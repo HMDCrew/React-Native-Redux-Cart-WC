@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from './axiosMiddleware'
 
 // AsyncStorage.removeItem('login-data')
-// AsyncStorage.removeItem('nonce')
 
 const auth_user_mixer = async (args) => {
 
@@ -20,19 +19,6 @@ const auth_user_mixer = async (args) => {
         'message': 'local auth error',
     };
 }
-
-/**
- * Nonce for api requests 
- */
-export const getNonce = createAsyncThunk('store/nonce', async () => {
-
-    // return await axios.get("wp-json/wpr-get-nonce").then((response) => {
-    //     if ('success' === response.data.status) {
-    //         AsyncStorage.setItem('nonce', JSON.stringify(response.data))
-    //     }
-    //     return response.data
-    // })
-});
 
 /**
  * Test api requests
@@ -60,13 +46,13 @@ export const getLoginToken = createAsyncThunk('store/login', async ({ email, pas
         return JSON.parse(login_data);
 
     } else {
-        return await axios.post("wp-json/simple-jwt-login/v1/auth", {
+        return await axios.post("wp-json/wpr-login", {
             email: email,
             password: passwd
         }).then((response) => {
-            AsyncStorage.setItem('login-data', JSON.stringify(response.data))
-            return response.data
-        }).catch((error) => error.data);
+            AsyncStorage.setItem('login-data', JSON.stringify(response.data.data))
+            return response.data.data
+        }).catch((error) => {console.log(response); return error.data});
     }
 });
 
@@ -79,21 +65,28 @@ export const isAuth = createAsyncThunk('store/auth', async () => {
 
         let user = JSON.parse(login_data);
 
-        await axios.post("wp-json/simple-jwt-login/v1/auth/validate")
+        const refresh_token = async () => {
+            return await axios.post("wp-json/simple-jwt-login/v1/auth/refresh")
+                .then((refresh_token) => {
+                    if (refresh_token.data?.success) {
+                        user.jwt = refresh_token.data?.data?.jwt
+                        AsyncStorage.setItem('login-data', JSON.stringify(user))
+                    } else {
+                        AsyncStorage.removeItem('login-data')
+                    }
+                })
+                .catch((error) => AsyncStorage.removeItem('login-data'));
+        }
+
+        axios.post("wp-json/simple-jwt-login/v1/auth/validate")
             .then(async (response) => {
                 if (!response.data?.success) {
-                    await axios.post("wp-json/simple-jwt-login/v1/auth/refresh")
-                        .then((refresh_token) => {
-                            if (refresh_token.data?.success) {
-                                user.jwt = refresh_token.data?.data?.jwt
-                                AsyncStorage.setItem('login-data', JSON.stringify(user))
-                            }
-                        })
+                    refresh_token()
                 }
                 return response.data
             })
             .catch((error) => {
-                return error;
+                return refresh_token()
             });
         return user;
     }
@@ -179,7 +172,7 @@ export const updateCart = createAsyncThunk('store/cart/update', async (cart) => 
  * API Remove Cart Product
  */
 export const removeCartProduct = createAsyncThunk('store/cart/remove/product', async (cart_prod_key) => {
-    return await axios.post("wp-json/wc/store/cart/remove-item/",
+    return await axios.post("wp-json/wpr-remove-cart-product",
         await auth_user_mixer({
             key: cart_prod_key
         }))
@@ -211,11 +204,10 @@ export const getPayments = createAsyncThunk('store/chackout/payments', async () 
 /**
  * API create new Order
  */
-export const createOrder = createAsyncThunk('store/order/new', async ({ cart, form_fields }) => {
+export const createOrder = createAsyncThunk('store/order/new', async ({ form_fields }) => {
+    console.log('test')
     return await axios.post("wp-json/wpr-create-order",
-        await auth_user_mixer({
-            cart, form_fields
-        }))
+        await auth_user_mixer({ form_fields }))
         .then((response) => response.data)
-        .catch((error) => error.data);
+        .catch((error) => error.response.data);
 });

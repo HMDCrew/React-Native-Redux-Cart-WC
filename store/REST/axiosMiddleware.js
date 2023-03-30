@@ -19,12 +19,6 @@ axios.interceptors.request.use(
             config.headers.Authorization = `Bearer ${jwt}`
         }
 
-        const nonce_script = await AsyncStorage.getItem('nonce');
-        if (null !== nonce_script) {
-            const { message } = JSON.parse(nonce_script)
-            config.headers['X-WC-Store-API-Nonce'] = message
-        }
-
         return config
     },
     error => {

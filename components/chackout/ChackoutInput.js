@@ -19,15 +19,26 @@ export class ChackoutInput extends Component {
         )
 
         return (
-            <View style={[styles.my_1, styles.px_1, styles.py_2, styles.w_100, styles.bg_white]}>
+            <View
+                style={[
+                    styles.my_1, styles.px_1, styles.py_2, styles.w_100, styles.bg_white,
+                    {
+                        flexDirection: 'row',
+                        flexWrap: 'wrap'
+                    }
+                ]}
+            >
                 <TextInput
                     onChangeText={value => this.props.onChangeText(value)}
                     placeholder={value.label}
                     value={value}
-                    style={{
-                        backgroundColor: 'white',
-                        color: COLORS.primary,
-                    }}
+                    style={[
+                        styles.w_100,
+                        {
+                            backgroundColor: 'white',
+                            color: COLORS.primary,
+                        }
+                    ]}
                     cursorColor={COLORS.primary}
                     keyboardType={keyboardType}
                 />

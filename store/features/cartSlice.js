@@ -32,7 +32,6 @@ const cartSlice = createSlice({
                 state.isLoading = false;
                 state.cart = [];
             })
-
             .addCase(addProductCart.pending, (state, action) => {
                 state.isLoading = true;
             })
@@ -59,12 +58,15 @@ const cartSlice = createSlice({
             .addCase(updateCart.rejected, (state, action) => {
                 state.isLoading = false;
             })
+
             .addCase(removeCartProduct.pending, (state, action) => {
                 state.isLoading = true;
             })
             .addCase(removeCartProduct.fulfilled, (state, action) => {
+                if ('success' === action.payload.status) {
+                    state.cart = action.payload.message.items;
+                }
                 state.isLoading = false;
-                state.cart = action.payload.items;
             })
             .addCase(removeCartProduct.rejected, (state, action) => {
                 state.isLoading = false;
